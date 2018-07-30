@@ -19,6 +19,8 @@ class ConnectionCache(object):
         self.prototype = prototype
 
     def get(self, parameters, logger):
+
+        # Calling key with parameters so that we can use the resulting key for lookup porpoises
         conn_key = key(parameters)
 
         # we could 'lock' this data  structure
@@ -52,10 +54,14 @@ class Connection(object):
             self.schema = input
         self.parameters = {}
         self.logger = None
+        self.cache_key = None
 
     def key_(self):
         """key is a unique connection key"""
-        return key(self.parameters)
+        if not self.cache_key:
+            self.cache_key = key(self.parameters)
+
+        return self.cache_key
 
     def set_(self, parameters):
         """ Set parameters """
